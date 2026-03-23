@@ -14,7 +14,7 @@ export default function Login() {
   const { setUser } = useAuth();
   const queryClient = useQueryClient();
 
-  const [companyNetwork, setCompanyNetwork] = useState("");
+  const [companyNetwork] = useState("DEFAULT");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -71,11 +71,9 @@ export default function Login() {
               </div>
               <input 
                 type="text" 
-                placeholder="Numéro de réseau (ex: 0125.6910...)" 
-                required
+                readOnly
                 value={companyNetwork}
-                onChange={e => setCompanyNetwork(e.target.value)}
-                className="w-full h-14 pl-20 pr-4 rounded-2xl bg-card border-2 border-border text-foreground font-medium placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all shadow-sm group-hover:shadow-md"
+                className="w-full h-14 pl-20 pr-4 rounded-2xl bg-muted border-2 border-border text-muted-foreground font-medium cursor-not-allowed shadow-sm"
               />
             </div>
 
