@@ -156,6 +156,7 @@ export const ListDocumentsType = {
   pending_validation: "pending_validation",
   drafts: "drafts",
   scheduled: "scheduled",
+  outbox: "outbox",
 } as const;
 
 export type UploadDocumentBody = {

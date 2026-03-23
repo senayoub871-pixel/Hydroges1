@@ -141,7 +141,7 @@ router.post("/", requireAuth, async (req: AuthenticatedRequest, res) => {
 });
 
 router.get("/:id", requireAuth, async (req: AuthenticatedRequest, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const userId = req.userId!;
 
   const [doc] = await db.select().from(documentsTable).where(eq(documentsTable.id, id)).limit(1);
@@ -160,7 +160,7 @@ router.get("/:id", requireAuth, async (req: AuthenticatedRequest, res) => {
 });
 
 router.put("/:id", requireAuth, async (req: AuthenticatedRequest, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const userId = req.userId!;
 
   const [doc] = await db.select().from(documentsTable).where(eq(documentsTable.id, id)).limit(1);
@@ -191,7 +191,7 @@ router.put("/:id", requireAuth, async (req: AuthenticatedRequest, res) => {
 });
 
 router.delete("/:id", requireAuth, async (req: AuthenticatedRequest, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const userId = req.userId!;
 
   const [doc] = await db.select().from(documentsTable).where(eq(documentsTable.id, id)).limit(1);
@@ -205,7 +205,7 @@ router.delete("/:id", requireAuth, async (req: AuthenticatedRequest, res) => {
 });
 
 router.post("/:id/send", requireAuth, async (req: AuthenticatedRequest, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const userId = req.userId!;
 
   const [doc] = await db.select().from(documentsTable).where(eq(documentsTable.id, id)).limit(1);
@@ -224,7 +224,7 @@ router.post("/:id/send", requireAuth, async (req: AuthenticatedRequest, res) => 
 });
 
 router.post("/:id/validate", requireAuth, async (req: AuthenticatedRequest, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const userId = req.userId!;
 
   const [doc] = await db.select().from(documentsTable).where(eq(documentsTable.id, id)).limit(1);
