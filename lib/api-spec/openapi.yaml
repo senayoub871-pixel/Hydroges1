@@ -1,0 +1,574 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: DocExchange - Document Exchange Platform API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: documents
+    description: Document operations
+  - name: users
+    description: User operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout user
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      tags: [auth]
+      summary: Get current user info
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List users in same company network
+      responses:
+        "200":
+          description: Users list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserSummary"
+
+  /documents:
+    get:
+      operationId: listDocuments
+      tags: [documents]
+      summary: List all documents for current user
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [inbox, sent, pending_validation, drafts, scheduled]
+      responses:
+        "200":
+          description: Documents list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Document"
+    post:
+      operationId: createDocument
+      tags: [documents]
+      summary: Create a new document
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDocumentRequest"
+      responses:
+        "201":
+          description: Document created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+
+  /documents/{id}:
+    get:
+      operationId: getDocument
+      tags: [documents]
+      summary: Get document by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Document
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateDocument
+      tags: [documents]
+      summary: Update document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDocumentRequest"
+      responses:
+        "200":
+          description: Document updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+    delete:
+      operationId: deleteDocument
+      tags: [documents]
+      summary: Delete document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Document deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /documents/{id}/validate:
+    post:
+      operationId: validateDocument
+      tags: [documents]
+      summary: Validate and transmit document (adds QR code)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Document validated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+
+  /documents/upload:
+    post:
+      operationId: uploadDocument
+      tags: [documents]
+      summary: Upload a document file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: File uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResponse"
+
+  /users/signature:
+    post:
+      operationId: uploadSignature
+      tags: [users]
+      summary: Upload user signature
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Signature uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+
+    RegisterRequest:
+      type: object
+      properties:
+        companyNetwork:
+          type: string
+          description: Company network identifier (number)
+        firstName:
+          type: string
+        lastName:
+          type: string
+        jobTitle:
+          type: string
+        department:
+          type: string
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        password:
+          type: string
+        confirmPassword:
+          type: string
+        signatureUrl:
+          type: string
+          nullable: true
+      required:
+        - companyNetwork
+        - firstName
+        - lastName
+        - jobTitle
+        - department
+        - email
+        - username
+        - password
+        - confirmPassword
+
+    LoginRequest:
+      type: object
+      properties:
+        companyNetwork:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - companyNetwork
+        - username
+        - password
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserProfile"
+        message:
+          type: string
+      required:
+        - user
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        companyNetwork:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        jobTitle:
+          type: string
+        department:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        signatureUrl:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - companyNetwork
+        - firstName
+        - lastName
+        - jobTitle
+        - department
+        - email
+        - username
+        - createdAt
+
+    UserSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        jobTitle:
+          type: string
+        department:
+          type: string
+        username:
+          type: string
+      required:
+        - id
+        - firstName
+        - lastName
+        - jobTitle
+        - department
+        - username
+
+    Document:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+          nullable: true
+        fileUrl:
+          type: string
+          nullable: true
+        fileName:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [draft, pending_validation, validated, sent, scheduled]
+        fromUserId:
+          type: integer
+        toUserId:
+          type: integer
+          nullable: true
+        fromUser:
+          $ref: "#/components/schemas/UserSummary"
+          nullable: true
+        toUser:
+          $ref: "#/components/schemas/UserSummary"
+          nullable: true
+        hasSignature:
+          type: boolean
+        qrCodeUrl:
+          type: string
+          nullable: true
+        scheduledAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - status
+        - fromUserId
+        - hasSignature
+        - createdAt
+        - updatedAt
+
+    CreateDocumentRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+          nullable: true
+        fileUrl:
+          type: string
+          nullable: true
+        fileName:
+          type: string
+          nullable: true
+        toUserId:
+          type: integer
+          nullable: true
+        hasSignature:
+          type: boolean
+        status:
+          type: string
+          enum: [draft, pending_validation, sent, scheduled]
+        scheduledAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - title
+        - status
+
+    UpdateDocumentRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+          nullable: true
+        fileUrl:
+          type: string
+          nullable: true
+        fileName:
+          type: string
+          nullable: true
+        toUserId:
+          type: integer
+          nullable: true
+        hasSignature:
+          type: boolean
+        status:
+          type: string
+          enum: [draft, pending_validation, sent, scheduled, validated]
+        scheduledAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    UploadResponse:
+      type: object
+      properties:
+        url:
+          type: string
+        fileName:
+          type: string
+      required:
+        - url
+        - fileName

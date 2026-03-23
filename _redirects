@@ -1,0 +1,5 @@
+# Serve index.html for SPA routing
+/*    /index.html    200
+
+# Proxy API requests to your backend
+/api/*    https://your-backend.netlify.app/:splat    200

@@ -1,0 +1,18 @@
+packages:
+  "framer-motion": "For smooth page transitions and modal animations"
+  "date-fns": "For human-readable date formatting in French"
+  "react-dropzone": "For drag-and-drop document file uploads"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility to cleanly merge tailwind classes"
+
+images:
+  - path: "artifacts/docexchange/public/images/logo.png"
+    description: "A minimal, professional logo mark combining a water drop and abstract geometric shapes, in deep purple and gold colors, on a transparent background"
+    aspect_ratio: "1:1"
+  - path: "artifacts/docexchange/public/images/auth-bg.png"
+    description: "An elegant, soft abstract background with flowing waves and light gradients of lavender, very light blue, and subtle hints of gold. Professional and clean corporate style."
+    aspect_ratio: "16:9"
+
+notes:
+  - Assumes authentication uses httpOnly cookies set by the backend API.
+  - Using generated hooks from @workspace/api-client-react for all API interactions.

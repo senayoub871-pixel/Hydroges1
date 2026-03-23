@@ -1,0 +1,9 @@
+{
+  "buildCommand": "pnpm install && pnpm --filter @workspace/docexchange run build",
+  "outputDirectory": "artifacts/docexchange/dist/public",
+  "installCommand": "pnpm install",
+  "framework": null,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
