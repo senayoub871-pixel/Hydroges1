@@ -14,7 +14,7 @@ export default function Login() {
   const { setUser } = useAuth();
   const queryClient = useQueryClient();
 
-  const [companyNetwork] = useState("DEFAULT");
+  const [companyNetwork] = useState("0125.6910");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 

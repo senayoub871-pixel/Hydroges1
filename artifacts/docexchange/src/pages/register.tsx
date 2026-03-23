@@ -53,7 +53,7 @@ export default function Register() {
     try {
       const result = await registerMutation.mutateAsync({
         data: {
-          companyNetwork: "DEFAULT",
+          companyNetwork: "0125.6910",
           firstName: formData.prenom,
           lastName: formData.nom,
           jobTitle: formData.poste,
