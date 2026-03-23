@@ -52,12 +52,6 @@ export default function Register() {
     }
 
     try {
-      let signatureUrl = null;
-      if (signatureFile) {
-        const uploadRes = await uploadSignatureMutation.mutateAsync({ data: { file: signatureFile } });
-        signatureUrl = uploadRes.url;
-      }
-
       const result = await registerMutation.mutateAsync({
         data: {
           companyNetwork: formData.companyNetwork,
@@ -69,12 +63,21 @@ export default function Register() {
           username: formData.username,
           password: formData.password,
           confirmPassword: formData.confirmPassword,
-          signatureUrl
+          signatureUrl: null
         }
       });
-      
-      toast({ title: "Succès", description: "Compte créé avec succès!" });
+
       setUser(result.user);
+
+      if (signatureFile) {
+        try {
+          await uploadSignatureMutation.mutateAsync({ data: { file: signatureFile } });
+        } catch {
+          // signature upload failed but account was created — not a blocker
+        }
+      }
+
+      toast({ title: "Succès", description: "Compte créé avec succès!" });
       await queryClient.invalidateQueries();
       setLocation("/");
     } catch (err) {
