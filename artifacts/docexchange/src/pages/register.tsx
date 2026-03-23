@@ -80,8 +80,10 @@ export default function Register() {
       toast({ title: "Succès", description: "Compte créé avec succès!" });
       await queryClient.invalidateQueries();
       setLocation("/");
-    } catch (err) {
-      toast({ title: "Erreur", description: "Impossible de créer le compte.", variant: "destructive" });
+    } catch (err: unknown) {
+      console.error("Registration error:", err);
+      const message = err instanceof Error ? err.message : "Erreur inconnue";
+      toast({ title: "Erreur", description: message, variant: "destructive" });
     }
   };
 
