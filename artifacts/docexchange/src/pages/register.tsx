@@ -24,7 +24,6 @@ export default function Register() {
     username: "",
     password: "",
     confirmPassword: "",
-    companyNetwork: "",
   });
   
   const [signatureFile, setSignatureFile] = useState<File | null>(null);
@@ -54,7 +53,7 @@ export default function Register() {
     try {
       const result = await registerMutation.mutateAsync({
         data: {
-          companyNetwork: formData.companyNetwork,
+          companyNetwork: "DEFAULT",
           firstName: formData.prenom,
           lastName: formData.nom,
           jobTitle: formData.poste,
@@ -107,11 +106,6 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="bg-secondary/40 backdrop-blur-md p-8 rounded-[2rem] border border-border/50 shadow-xl space-y-5">
           
-          <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-4 items-center">
-            <label className="font-bold text-primary md:text-right">Réseau Ent.</label>
-            <input name="companyNetwork" required value={formData.companyNetwork} onChange={handleChange} className="h-12 px-4 rounded-xl bg-card border border-border focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Numéro de réseau" />
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-4 items-center">
             <label className="font-bold text-primary md:text-right">Nom</label>
             <input name="nom" required value={formData.nom} onChange={handleChange} className="h-12 px-4 rounded-xl bg-card border border-border focus:ring-2 focus:ring-primary/20 outline-none" />
