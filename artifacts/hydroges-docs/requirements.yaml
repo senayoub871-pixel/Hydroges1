@@ -1,0 +1,17 @@
+packages:
+  "framer-motion": "For elegant page transitions and interactive animations"
+  "date-fns": "For elegant date formatting and handling French locales"
+  "react-signature-canvas": "For capturing user signatures on documents"
+  "@types/react-signature-canvas": "Types for signature canvas"
+  "lucide-react": "For beautiful consistent icons"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility function to efficiently merge Tailwind CSS classes"
+
+images:
+  - path: "artifacts/hydroges-docs/public/images/hero-bg.png"
+    description: "Abstract geometric background with subtle deep blue and white corporate gradients, very clean and professional"
+    aspect_ratio: "16:9"
+
+notes:
+  - API endpoints are generated via orval in @workspace/api-client-react
+  - Implementing a mock data fallback strategy to ensure the UI looks complete even if the backend database is empty

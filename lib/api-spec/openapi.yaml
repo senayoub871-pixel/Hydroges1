@@ -1,0 +1,333 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: HYDROGES Document Exchange API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: documents
+    description: Document operations
+  - name: users
+    description: User operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /users:
+    get:
+      operationId: getUsers
+      tags: [users]
+      summary: Get all users
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  /documents:
+    get:
+      operationId: getDocuments
+      tags: [documents]
+      summary: Get all documents
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, sent, scheduled, pending_validation, received, failed]
+        - name: folder
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Document"
+    post:
+      operationId: createDocument
+      tags: [documents]
+      summary: Create a document
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDocument"
+      responses:
+        "201":
+          description: Document created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+  /documents/{id}:
+    get:
+      operationId: getDocument
+      tags: [documents]
+      summary: Get a document by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Document details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+    put:
+      operationId: updateDocument
+      tags: [documents]
+      summary: Update a document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDocument"
+      responses:
+        "200":
+          description: Document updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+    delete:
+      operationId: deleteDocument
+      tags: [documents]
+      summary: Delete a document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+  /documents/{id}/sign:
+    post:
+      operationId: signDocument
+      tags: [documents]
+      summary: Sign a document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignDocument"
+      responses:
+        "200":
+          description: Document signed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+  /documents/{id}/send:
+    post:
+      operationId: sendDocument
+      tags: [documents]
+      summary: Send a document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendDocument"
+      responses:
+        "200":
+          description: Document sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        department:
+          type: string
+        avatarInitials:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - department
+        - avatarInitials
+    Document:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        status:
+          type: string
+          enum: [draft, sent, scheduled, pending_validation, received, failed]
+        senderId:
+          type: integer
+        senderName:
+          type: string
+        recipientId:
+          type: integer
+        recipientName:
+          type: string
+        recipientEmail:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        scheduledAt:
+          type: string
+          nullable: true
+        signedAt:
+          type: string
+          nullable: true
+        signatureData:
+          type: string
+          nullable: true
+        signatureX:
+          type: number
+          nullable: true
+        signatureY:
+          type: number
+          nullable: true
+        fileType:
+          type: string
+        fileSize:
+          type: string
+        category:
+          type: string
+      required:
+        - id
+        - title
+        - content
+        - status
+        - senderId
+        - senderName
+        - recipientId
+        - recipientName
+        - recipientEmail
+        - createdAt
+        - updatedAt
+        - fileType
+        - fileSize
+        - category
+    CreateDocument:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        recipientId:
+          type: integer
+        scheduledAt:
+          type: string
+          nullable: true
+        category:
+          type: string
+        fileType:
+          type: string
+      required:
+        - title
+        - content
+        - recipientId
+        - category
+        - fileType
+    UpdateDocument:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        recipientId:
+          type: integer
+        scheduledAt:
+          type: string
+          nullable: true
+        status:
+          type: string
+        category:
+          type: string
+    SignDocument:
+      type: object
+      properties:
+        signatureData:
+          type: string
+        signatureX:
+          type: number
+        signatureY:
+          type: number
+      required:
+        - signatureData
+        - signatureX
+        - signatureY
+    SendDocument:
+      type: object
+      properties:
+        scheduledAt:
+          type: string
+          nullable: true
+      required: []

@@ -1,0 +1,20 @@
+[build]
+  base = "."
+  command = "pnpm install --frozen-lockfile && pnpm --filter @workspace/api-spec run codegen && pnpm --filter @workspace/hydroges-docs run build"
+  publish = "artifacts/hydroges-docs/dist/public"
+
+[build.environment]
+  NODE_VERSION = "20"
+  BASE_PATH = "/"
+  PNPM_VERSION = "9"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://your-render-api.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
